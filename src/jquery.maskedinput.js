@@ -94,6 +94,23 @@ $.fn.extend({
 		partialPosition = len = mask.length;
 		firstNonMaskPos = null;
 
+		if (chrome && android) {
+			var allAllowedRegExps = '';
+			jQuery.each(defs, function (key, value) {
+				allAllowedRegExps = allAllowedRegExps + key;
+			});
+			allAllowedRegExps = allAllowedRegExps.replace(/\[/g, '');
+			allAllowedRegExps = allAllowedRegExps.replace(/\]/g, '');
+			allAllowedRegExps = '[^' + allAllowedRegExps + ']';
+			var re = new RegExp(allAllowedRegExps, "g");
+			var actual = mask;
+			var replacedVal = actual.replace(re, "");
+			var actualValue = actual.length - replacedVal.length;
+			if ($(this).attr('maxlength') !== undefined) {
+				$(this).attr('maxlength', parseInt(this.attr('maxlength')) + parseInt(actualValue));
+			}
+		}
+
 		mask = String(mask);
 
 		$.each(mask.split(""), function(i, c) {
